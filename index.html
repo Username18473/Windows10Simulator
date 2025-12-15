@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Windows 10</title>
+    <link rel="stylesheet" href="Styles/Popup.css">
+    <link rel="stylesheet" href="Styles/Desktop.css">
+    <link rel="stylesheet" href="Styles/Edge.css">
+    <link rel="stylesheet" href="Styles/Control-Panel.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-image: url('Wallpapers/Default.png');
+            background-size: cover;
+            height: 100vh;
+            color: white;
+            text-shadow: 2px 2px rgba(7, 7, 7, 0.7);
+            overflow: auto;
+            user-select: none;
+        }
+        .Downloads {
+            width: 200px;
+            height: 200px; 
+            border-color: #1f1f1f; 
+            flex-direction: column; 
+            border-radius: 10px; 
+            align-items: center; 
+            gap: 10px; 
+            padding: 12px;
+        }
+        .Install {
+        background-color: deepskyblue;
+        border-radius: 5px;
+        width: 80px;
+        border-color: transparent;
+    }
+        .Install:hover {
+            background-color: skyblue;
+            cursor: pointer;
+        }
+        #battery { 
+            position: fixed;  
+            bottom: 45px;  
+            right: 0px; 
+            width: 400px; 
+            height: 250px; 
+            background-color: #1f1f1f; 
+            border-radius: 10px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            color: white; 
+            font-size: 24px; 
+            z-index: 1000; 
+            display: none;
+        }
+        .network-status img {
+    width: 50px;
+    height: 50px;
+    margin-top: -13px;
+    display: block;
+}
+.network-status {
+    bottom: 0px;
+    right: 90px;
+    position: relative;
+}
+::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    height: 5px;
+    width: 3px;
+}
+::-webkit-scrollbar {
+    background-color: transparent;
+}
+#ComputerStats {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    right: 100px;
+    bottom: -10px;
+}
+ul li span {
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+}
+ul li img {
+    width: 150px;
+    height: 150px;
+}
+#PlayButton {
+    background-image: url('Apps/MediaPlayer.png');
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border: none;
+    transition: all 0.4s;
+}
+#PlayButton:hover {
+    transform: scale(0.85);
+}
+.taskbarUI {
+    width: 55px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    transition: all 0.45s;
+    padding: 10px;
+}
+.taskbarUI:hover {
+    background-color: rgba(172, 172, 172, 0.51);
+}
+  .screen { width: 90%; height: 40px; background: #eee; border: 2px inset #999; font-size: 20px; text-align: right; padding: 5px; color: black;}
+        .buttons { display: grid; grid-template-columns: repeat(4, 50px); gap: 5px; margin-top: 10px; }
+        .btn { width: 50px; height: 50px; background: #ddd; border: 2px outset #999; font-size: 18px; cursor: pointer; }
+        .btn:active { border: 2px inset #999; }
+        #OptionBrowser {
+             display: flex;
+  justify-content: space-between;
+  align-items: center;
+        }
+        #Hover {
+            display: none;
+            z-index: 88;
+        }
+        .start-button-icon {
+            position: relative;
+            left: 0;
+        }
+        .time-container:hover {
+            background: #444;
+        }
+        #Dark {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            display: none;
+        }
+        .other {
+    background: #ffffff;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.start-right .app-icon {
+    width: 25px;
+    height: 25px;
+}
+    </style><!--"Stubborn, sensual, loyal, superstitious."-->
+</head>
+<body>
+    <audio src="Sounds/UserAccountControl.wav" id="UACsound"></audio>
+    <div id="Dark"></div>
+    <div class="desktop">
+        <div class="icon" style="top: 135px; left: 20px;" onclick="showBrowser()">
+            <img class="app" src="Apps/Edge.png" alt="Edge">
+            <span>Edge</span>
+        </div>
+        <div class="icon" style="top: 20px; left: 20px;" onclick="openPopup('FileExplorerPopup')">
+            <img class="app" src="Apps/Recycle-Bin.png" alt="Recycle Bin">
+            <span>Recycle Bin</span>
+        </div>
+        <div class="icon" style="top: 250px; left: 20px;" onclick="openPopup('UACPopup');Dark();Playsound('UACsound')">
+            <img class="app" src="Apps/UAC1.png" alt="UAC">
+            <span>Shortcut</span>
+        </div>
+    </div>
+        <div class="taskbar">
+        <div class="start-button">
+        <img class="start-button-icon" onclick="StartIcon()" if="NotHover" src="Start-Buttons/Default.png" alt="Start">
+        <img class="start-button-icon" id="Hover" src="Start-Buttons/Hover.png" alt="Start">
+        </div>
+        <input  id="start-bar" type="text" placeholder="🔎 Type here to search">
+        <div class="taskbarUI">
+        <img class="button" onclick="openPopup('CopilotPopup')"src="Apps/Copilot.png" alt="Copilot">
+        </div>
+        <div class="taskbarUI">
+        <img class="button" onclick="showBrowser()" src="Apps/Edge.png" alt="Edge">
+        </div>
+        <div class="taskbarUI">
+        <img class="button" onclick="openPopup('FileExplorerPopup')" src="Apps/File-Explorer.png" alt="File Explorer">
+        </div>
+        <div class="taskbarUI">
+         <img class="button" onclick="openPopup('MicrosoftStorePopup')" src="Apps/Store.png" alt="Edge">
+        </div>
+         <div id="ComputerStats">
+         <img style="font-size: 30px;position: relative;bottom: 10px;left: 50px;width: 40px;height: 20px;" src="Misc/Battery.png" onclick="openBattery()">
+         <div class="network-status" style="width: 50px; height: 50px">
+        <img src="Network/Average.ico" alt="Network Signal" id="network-icon">
+    </div>
+    </div>
+        <div class="time-container">
+    <div class="time" id="time">23:17</div>
+    <div class="date" id="date">03/19/25</div>
+</div>
+        </div>
+<div class="start-menu active">
+        <div style="background-color: #1f1f1f;width: 50px;height: 500px;display: flex;flex-direction: column-reverse;align-items: center;padding: 10px;z-index: -99999999999999999999999999;">
+            <span style="font-size: 30px; margin-top: 20px;" onclick="openPopup('controlPanelPopup')">⚙️</span>
+             <div style="width: 30px; height: 30px; background-image: url('Misc/Picture.png'); background-size: cover; margin-top: 20px;" onclick="openPopup('FileExplorerPopup')"></div>
+               <div style="width: 30px; height: 30px; background-image: url('Misc/Document.png'); background-size: cover; margin-top: 20px;" onclick="openPopup('FileExplorerPopup')"></div>
+  <div style="width: 30px; height: 30px; border-radius: 50%; background-image: url('Profiles/Default.png'); background-size: cover; margin-top: 20px;"></div>
+</div>
+        <div class="start-left">
+            <div class="most-used">
+                <span>C</span>
+                <div class="app-item" onclick="openPopup('webcamPopup')">
+                    <img class="app-icon" src="Apps/Camera.png" alt="Camera">
+                    <span>Camera</span>
+                </div>
+                <div class="app-item" onclick="openPopup('CalculatorPopup')">
+                    <img class="app-icon" src="Apps/Calculator.webp" alt="Calculator">
+                    <span>Calculator</span>
+                </div>
+                <div id="Coderz" style="display: none;">
+                    <div class="app-item" onclick="openPopup('CoderzPopup')">
+                        <img class="app-icon" src="Apps/Coderz.png" alt="Coderz">
+                        <span>Coderz</span>
+                    </div>
+                </div>
+                <div class="app-item">
+                    <img class="app-icon" src="Apps/Copilot.png" alt="Copilot">
+                    <span>Copilot</span>
+                </div>
+                <span>E</span>
+                <div class="app-item" onclick="showBrowser()">
+                    <img class="app-icon" src="Apps/Edge.png" alt="Edge">
+                    <span>Edge</span>
+                </div>
+                <div id="Glinch" style="display: none;">
+                    <span>G</span> 
+                          <div class="app-item" onclick="openPopup('GlinchPopup')">
+                    <img class="app-icon" src="Apps/Glitch.png">
+                    <span>Glinch</span>
+                </div>
+                </div>
+                <div id="HyperV" style="display: none;">
+                    <span>H</span>
+                <div class="app-item" onclick="openPopup('HyperVPopup')">
+                    <img class="app-icon" src="Apps/HyperV.png">
+                    <span>Hyper-v</span>
+                </div>
+            </div>
+                <span>M</span>
+                <div class="app-item" onclick="openPopup('MediaPlayerPopup')">
+                    <img class="app-icon" src="Apps/MediaPlayer.png" alt="Media Player">
+                    <span>Media Player</span>
+                </div>
+                <span>N</span>
+                <div class="app-item" onclick="openPopup('NotepadPopup')">
+                    <img class="app-icon" src="Apps/Notepad.png" alt="Notepad">
+                    <span>Notepad</span>
+                </div>
+                <span>O</span>
+                <div class="app-item">
+                    <img class="app-icon" src="Apps/Outlook.png" alt="Outlook">
+                    <span>Outlook</span>
+                </div>
+                <span>P</span>
+                <div class="app-item" onclick="openPopup('PaintPopup')">
+                    <img class="app-icon" src="Apps/Paint.png" alt="Settings">
+                    <span>Paint</span>
+                </div>
+                <span>S</span>
+                <div class="app-item" onclick="openPopup('controlPanelPopup')">
+                    <img class="app-icon" src="Apps/Settings.png" alt="Settings">
+                    <span>Settings</span>
+                </div>
+                <div class="app-item" onclick="openPopup('MicrosoftStorePopup')">
+                    <img class="app-icon" src="Apps/Store.png" alt="Store">
+                    <span>Store</span>
+                </div>
+            </div>
+        </div>
+        <div class="start-right">
+            <div class="calendar-widget">
+    <p id="day-of-week">Sunday</p>
+    <p id="day-number"> 9</p>
+</div>
+            <div class="tile" onclick="openPopup('webcamPopup')" style="flex-direction: column; align-items: center;">
+                <img class="app-icon" src="Apps/Camera.png" alt="Camera">
+                <span style="font-size: 10px;">Camera</span>
+            </div>
+            <div class="tile" onclick="openPopup('MicrosoftStorePopup')" style="flex-direction: column; align-items: center;">
+                <img class="app-icon" src="Apps/Store.png" alt="Store">
+                <span style="font-size: 10px;">Microsoft Store</span>
+            </div>
+            <div class="weather-tile">
+             <h3>Weather</h3>
+             <p id="temperature">3.3°C</p>
+        </div>
+            <div class="tile">Maps</div>
+            <div class="tile" onclick="openPopup('OutlookPopup')" style="flex-direction: column; align-items: center;">
+                <img class="app-icon" src="Apps/Outlook.png" alt="Outlook">
+                <span style="font-size: 14px;">Outlook</span>
+            </div>
+            <div class="tile" onclick="openPopup('PaintPopup')" style="flex-direction: column; align-items: center;">
+                <img class="app-icon" src="Apps/Paint.png" alt="Paint">
+                <span style="font-size: 14px;">Paint</span>
+            </div>
+            <div class="tile" style="flex-direction: column; align-items: center;">
+                <img class="app-icon" src="Apps/Copilot.png">
+                <span style="font-size: 14px;">Copilot</span>
+            </div>
+            <div class="tile" onclick="showBrowser()" style="flex-direction: column; align-items: center;">
+                <img class="app-icon" src="Apps/Edge.png" alt="Edge">
+                <span style="font-size: 9px;">Microsoft Edge</span>
+            </div>
+            <div class="tile" onclick="window.location.href='https://www.instagram.com/isandro_t'" target="_blank">
+                <img src="Apps/Instagram.png" alt="Instagram" style="width: 70px; height: 70px;">
+            </div>
+              <div class="tile" onclick="window.location.href='https://github.com/Username18473/Windows10Simulator'" target="_blank">
+                <img src="Apps/GitHub.png" alt="GitHub" style="width: 70px; height: 70px;">
+              </div>
+        </div>
+    </div>
+    <div class="popup" id="controlPanelPopup">
+    <header>
+        <h2 style="color: white; font-family: Arial, sans-serif;">Control Panel</h2>
+        <button class="close-button" onclick="closePopup('controlPanelPopup')">X</button>
+    </header>
+    <div class="content">
+        <img src="Misc/Personalize.png" alt="Header Image" class="header-image" style="width: 60px; height: 60px;">
+        <h3 style="color: black; font-family: Arial, sans-serif;" id="header-text">Personalization</h3>
+    </div>
+            <div id="wallpaper-selection" style="display: flex; gap: 10px; flex-wrap: wrap; padding-top: 10px;">
+                <button style="border: none; background: none; padding: 0; cursor: pointer;" onclick="setWallpaper('Wallpapers/Beach.jpg')">
+                    <img src="Wallpapers/Beach.jpg" alt="Wallpaper 1" class="wallpaper" data-wallpaper="Wallpapers/Beach.jpg">
+                </button>
+                <button style="border: none; background: none; padding: 0; cursor: pointer;" onclick="setWallpaper('Wallpapers/Flower.jpg')">
+                    <img src="Wallpapers/Flower.jpg" alt="Wallpaper 2" class="wallpaper" data-wallpaper="Wallpapers/Flower.jpg">
+                </button>
+                <button style="border: none; background: none; padding: 0; cursor: pointer;" onclick="setWallpaper('Wallpapers/Lake.png')">
+                    <img src="Wallpapers/Lake.png" alt="Wallpaper 3" class="wallpaper" data-wallpaper="Wallpapers/Lake.png">
+                </button>
+                <button style="border: none; background: none; padding: 0; cursor: pointer;" onclick="setWallpaper('Wallpapers/Default.png')">
+                    <img src="Wallpapers/Default.png" alt="Default" class="wallpaper" data-wallpaper="Wallpapers/Default.png">
+                </button>
+                <button class="upload-btn" onclick="triggerUpload()">Browse...</button>
+                <input type="file" id="upload-image" style="display: none;" accept="image/*" onchange="setCustomWallpaper(event)">
+            </div>
+        <img src="Misc/clock.png" alt="Header Image" class="header-image" style="width: 60px; height: 60px;">
+        <h3 style="color: black; font-family: Arial, sans-serif;" id="header-text">Language</h3>
+        <div id="language-timezone-popup" class="controlPanelPopup">
+            <div class="popup-content">
+                <form id="language-form">
+                    <select id="language" name="language">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="zh">Chinese</option>
+                    </select>
+                <button type="button" id="save-language-timezone">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="browser" id="browser">
+    <header id="OptionBrowser">
+    <img id="favicon" src="" alt="Favicon" style="width: 16px; height: 16px; margin-right: 10px; display: none;">
+    <div>
+    <button class="other" onclick="ExitFullscreen()">-</button>
+    <button class="other" onclick="Fullscreen('browser')">□</button>
+    <button class="close-button" class="other" onclick="closeBrowser()">X</button>
+    </div>
+    </header>
+            <header>
+          <button class="browser-buttons" style="border: none;  padding: 0; cursor: pointer;" onclick="goBack()">🠔</button>
+                <button class="browser-buttons" style="border: none; padding: 0; cursor: pointer;"  onclick="goForward()">🠖</button>
+                <button class="browser-buttons" style="border: none; padding: 0; cursor: pointer;" onclick="Wait4thisMoment()">🔄</button>
+                <input id="url-bar" type="text" placeholder="Enter URL">
+                <button id="SearchButton" onclick="loadPage()">🔎</button>
+            </header>
+            <iframe id="webview" allowfullscreen="true" src="https://www.google.com/?igu=1"></iframe>
+        </div>
+        <div class="popup" id="HyperVPopup" style=" height: 800px; width: 800px;">
+        <header>
+        <h2>Virtual Machine</h2>
+         <button class="close-button" onclick="closePopup('HyperVPopup')">X</button>
+        </header>
+        <div class="content" style="padding: 0px; text-align: center; height: 100%; width: 100%;">
+        <iframe style="width: 100%; height: 100%;" src="Start.html"></iframe>
+        </div>
+    </div>
+    <div class="popup" id="PaintPopup">
+        <header>
+            <h2>Paint</h2>
+            <div>
+                 <button class="other" onclick="ExitFullscreen()">-</button>
+            <button class="other" onclick="Fullscreen('PaintPopup')">□</button>
+            <button class="close-button" onclick="closePopup('PaintPopup')">X</button>
+        </div>
+        </header>
+    <div class="content" style="background-color: white;">
+        <div id="toolbar">
+        <button onclick="clearCanvas()" style="border: none; background: none; padding: 0; cursor: pointer;">
+            <img src="Popup-Buttons/Eraser.png" alt="Skip" style="width: 25px; height: 25px;">
+        </button>
+      <button onclick="changeTool('brush')" style="border: 2px solid rgb(192, 192, 192); background: white; padding: 0; cursor: pointer;">🖌️
+        </button> 
+        <button onclick="ChangeLineSize(5)">5</button>
+        <button onclick="ChangeLineSize(10)">10</button>
+        <button onclick="ChangeLineSize(25)">25</button>
+         <button onclick="ChangeLineSize(50)">50</button>
+            <div class="color-palette" id="colorPalette">
+        <div class="content" style="background-color: rgb(173, 169, 169); width: 100%;">
+                </div>
+            </div>
+        </div>
+        <div id="canvas-container"></div>
+        <canvas id="Paint" style="border-color: gray; border-width: 1px;"></canvas>
+        </div>
+    </div>
+</div>
+<div class="popup" id="NotepadPopup">
+    <header>
+        <h2>Notepad</h2>
+        <button class="close-button" onclick="closePopup('NotepadPopup')">X</button>
+    </header>
+    <div class="content">
+    <button onclick="loadNote()">Open</button>
+    <button onclick="saveNote()">Save</button>
+    <button onclick="clearNote()">Clear</button>
+    </div>
+    <div class="content">
+        <textarea id="notepad" placeholder="Type here" style="width: 100%; height: 370px;resize: none;"></textarea>
+    </div>
+</div>
+<div class="popup" id="MicrosoftStorePopup">
+    <header>
+        <h2>Microsoft Store</h2>
+        <div>
+         <button class="other" onclick="ExitFullscreen()">-</button>
+        <button class="other" onclick="Fullscreen('MicrosoftStorePopup')">□</button>
+        <button class="close-button" onclick="closePopup('MicrosoftStorePopup')">X</button>
+        </div>
+    </header>
+    <div class="content" style="display: grid; overflow-y: auto; gap: 20px; padding: 12px; background-color: #2f2f2f; grid-template-columns: repeat(3, 90px); grid-auto-rows: 140px;">
+        <div class="Downloads" style="width: 100px; height: 150px; background: #1f1f1f; border-radius: 10px; align-items: center;">
+            <img src="Apps/HyperV.png" alt="HyperV" style="width: 80px; height: 80px;">
+            <span>Hyper-V</span>
+            <button class="Install" onclick="Install('HyperV')"> Free - Install</button>
+        </div>
+        <div class="Downloads" style="width: 100px; height: 150px; background: #1f1f1f; border-radius: 10px; align-items: center;">
+            <img src="Apps/Paint.png" alt="Paint" style="width: 80px; height: 80px;">
+            <span>Paint</span>
+            <button class="Install" onclick="Install('Paint')"> $ 199.99 - Install</button>
+        </div>
+        <div class="Downloads" style="width: 100px; height: 150px; background: #1f1f1f; border-radius: 10px; align-items: center;">
+            <img src="Apps/Coderz.png" alt="Coderz" style="width: 80px; height: 80px;">
+            <span>Coderz</span>
+            <button class="Install" onclick="Install('Coderz')"> $ 999.99 - Install</button>
+        </div>
+        <div class="Downloads" style="width: 100px; height: 150px; background: #1f1f1f; border-radius: 10px; align-items: center;">
+            <img src="Apps/Glitch.png" alt="Glinch" style="width: 80px; height: 80px;">
+            <span>Glinch</span>
+            <button class="Install" onclick="Install('Glinch')"> Free - Install</button>
+        </div>
+        <div class="Downloads" style="width: 100px; height: 150px; background: #1f1f1f; border-radius: 10px; align-items: center;">
+            <img src="Apps/Coderz.png" alt="Coderz" style="width: 80px; height: 80px;">
+            <span>Coderz</span>
+            <button class="Install" onclick="Install('Coderz')"> $ 999.99 - Install</button>
+        </div>
+    </div>
+</div>
+<div id="battery">
+    <img id="BatteryImg" src="Misc/Battery.png" alt="Battery Icon" style="width: 200px; height: 100px;">
+    <span style="font-size: larger;" id="battery-percentage">100%</span>
+    <button class="close-button" onclick="openBattery()">X</button>
+    <div id="network-status" style="position: fixed; color: white;">
+  🌐 Checking...
+    </div>
+</div>
+<div class="popup" id="FileExplorerPopup">
+    <header>
+        <h2>File Explorer</h2>
+        <button class="close-button" onclick="closePopup('FileExplorerPopup')">X</button>
+    </header>
+    <div class="content">
+     <ul>
+        <li><img class="app-icon" src="Misc/Docs.ico" alt="Docs"><span>Documents</span></li>
+        <li><img class="app-icon" src="Misc/Picture.ico" alt="Pics"><span>Pictures</span></li>
+        <li><img class="app-icon" src="Misc/Video.ico" alt="Videos"><span>Videos</span></li>
+        <li><img class="app-icon" src="Misc/Music.ico" alt="Music"><span>Music</span></li>
+     </ul>
+</div>
+</div>
+<div class="popup" id="webcamPopup">
+<header>
+    <h2>Camera</h2>
+    <button class="close-button" onclick="closePopup('webcamPopup')">X</button>
+</header>
+<div class="content">
+<video id="webcam"></video>
+    </div>
+</div>
+<div class="popup" id="MediaPlayerPopup">
+    <header>
+        <h2>Media Player</h2>
+        <button class="close-button" onclick="closePopup('MediaPlayerPopup')">X</button>
+    </header>
+    <div class="content">
+        <video width="400" id="Audio" loop>
+            <source src="Media/sample.mp4" type="video/mp4 , audio/wav">
+            Your browser does not support the video tag.
+        </video>
+        <input onclick="UploadAudio()" type="file" id="AudioInput" placeholder="Upload Audio">
+        <span id="TimeTeller" style="color: black;">0:00</span>
+        <button onclick="Back10seconds()">⏪ 10s</button>
+        <button id="PlayButton" onclick="Pause()"></button>
+        <button onclick="Forward10seconds()">⏩ 10s</button>
+    </div>
+</div>
+<div class="popup" id="CopilotPopup">
+    <header>
+        <h2>Copilot</h2>
+        <button class="close-button" onclick="closePopup('CopilotPopup')">X</button>
+    </header>
+    <div class="content" style="background-color: rgba(21,26,40,255)">
+            <img class="app-icon" src="Apps/Copilot.png" alt="copilot">
+            <span>Microsoft Copilot</span>
+            <p id="CopilotP">.</p>
+        <div style="width: 100%; display: flex;">
+        <input style="background-color: rgb(19, 10, 118); padding: 20px; border-radius: 15px; color: white; width: 90%;" type="text" placeholder="Message">
+        <button style="width: 10%; background-color: rgb(19, 10, 118); color: white;" onclick="Talk()">🡹</button>
+    </div>
+    </div>
+    </div>
+</div>
+<div class="popup" id="CalculatorPopup">
+    <header>
+        <h2>Calculator</h2>
+        <button class="close-button" onclick="closePopup('CalculatorPopup')">X</button>
+        </header>
+        <div class="content">
+                 <div class="screen" id="screen">0</div>
+            <div class="buttons">
+                <button class="btn" onclick="press('7')">7</button>
+                <button class="btn" onclick="press('8')">8</button>
+                <button class="btn" onclick="press('9')">9</button>
+                <button class="btn" onclick="press('/')">÷</button>
+                <button class="btn" onclick="press('4')">4</button>
+                <button class="btn" onclick="press('5')">5</button>
+                <button class="btn" onclick="press('6')">6</button>
+                <button class="btn" onclick="press('*')">×</button>
+                <button class="btn" onclick="press('1')">1</button>
+                <button class="btn" onclick="press('2')">2</button>
+                <button class="btn" onclick="press('3')">3</button>
+                <button class="btn" onclick="press('-')">−</button>
+                <button class="btn" onclick="press('0')">0</button>
+                <button class="btn" onclick="press('.')">.</button>
+                <button class="btn" onclick="calculate()">=</button>
+                <button class="btn" onclick="press('+')">+</button>
+                <button class="btn" onclick="press('**')">^</button>
+                <button class="btn" onclick="clearScreen()">C</button>
+                <button class="btn" onclick="squareRoot()">√</button>
+            </div>
+        </div>
+    </div>
+        </div>
+<div class="popup" id="UACPopup" style="z-index: 9999999999; padding: 0; border: 0;">
+    <header style="background-color: #3399FF; border: none; border-radius: 0;">
+        <h2>User Account Control</h2>
+        <button class="close-button" style="background-color: transparent;" onclick="closePopup('UACPopup');Dark()">X</button>
+    </header>
+    <div class="content" style="padding: 0;">
+         <div class="content" style="background-color: #3399FF;display: flex;">
+            <h3 style="color: black; font-family: Arial, sans-serif;">Do you want to allow this app to make changes to your device?</h3>
+        </div>
+        <div class="content" style="background-color: #222;">
+             <img src="Apps/UAC1.png" alt="UAC Image" style="width: 75px;height: 75px;">
+             <span style="font-size: 30px;color: #ffffff;">Test</span>
+            </div>
+            <span style="font-size: 25px;color: white;background-color: #222;width: fit-content;display: flex;">Vertified publisher: Microsoft Windows</span>
+            <div class="content" style="text-align: center; background-color: #222; border-radius: 0;">
+        <button style="background-color: #2f2f2f; color: white; padding: 10px; border: none; cursor: pointer; width: 120px;" onclick="closePopup('UACPopup');Dark()">Yes</button>
+        <button style="background-color: #2f2f2f; color: white; padding: 10px; border: none; cursor: pointer; width: 120px;" onclick="closePopup('UACPopup');Dark()">No</button>
+        </div>
+    </div>
+</div>
+<div class="popup" id="CoderzPopup" style="width: 500px;">
+    <header>
+        <h2>Coderz Editor</h2>
+        <button class="close-button" onclick="closePopup('CoderzPopup')">X</button>
+    </header>
+    <div class="content" style="padding: 0;">
+        <iframe style="width: 100%; height: 550px;"src="Code Project/Editor.html"></iframe>
+    </div>
+</div>
+<div class="popup" id="GlinchPopup">
+    <header>
+        <h2>App</h2>
+        <button class="close-button" onclick="closePopup('GlinchPopup')">X</button>
+    </header>
+    <div class="content">
+        <button onclick="GlitchAndInvert()">Get <strong>FREE</strong>$ 100 Microsoft store gift card!!</button>
+    </div>
+</div>
+    <script src="Scripts/Start-Menu.js"></script>
+    <script src="Scripts/Edge.js"></script>
+    <script src="Scripts/Wallpaper.js"></script>
+    <script src="Scripts/Paint.js"></script>
+    <script src="Network/Network.js"></script>
+        <script type="module">
+      import { PowerGlitch } from '/Scripts/powerglitch.js';
+     PowerGlitch.glitch('div', {
+    playMode: 'hover',
+    glitchTimeSpan: {
+      start: 0.1,
+      end: 0.9
+    },
+    shake: {
+      velocity: 10,
+      amplitudeX: 0.3,
+      amplitudeY: 0.3
+    },
+    slice: {
+      count: 10,
+      velocity: 15,
+      minHeight: 0.02,
+      maxHeight: 0.15
+    } 
+  }); 
+</script>
+    <script>
+             let inverted = false
+        function GlitchAndInvert() {
+    inverted = !inverted
+    document.body.style.filter = inverted ? "invert(0)" : "invert(1)"
+        }
+        if(localStorage.getItem("BoughtHyperV")==='true') {
+            document.getElementById('HyperV').style.display = 'block'
+        }
+        if(localStorage.getItem("BoughtCoderz")==='true') {
+            document.getElementById('Coderz').style.display = 'block'
+        }
+        if(localStorage.getItem("BoughtGlinch")==="true") {
+            document.getElementById('Glinch').style.display = 'block'
+        }
+        function Playsound(src) {
+            const source = document.getElementById(`${src}`)
+            source.currentTime = 0;
+            source.play() //My dumbass forgot () 😭😭🪦🪦🪦
+        }
+        function Dark() {
+            const DarkOverlay = document.getElementById('Dark');
+            if(DarkOverlay.style.display === 'block') {
+                DarkOverlay.style.display = 'none';
+                return;
+            } else {
+                DarkOverlay.style.display = 'block';
+            }
+        }
+        const SearchButton = document.getElementById('url-bar');
+        SearchButton.addEventListener('keydown', (event) => {
+        if(event.key === 'Enter') {
+            loadPage();
+        }
+});
+        function Talk() {
+            const Copilot = document.getElementById('CopilotP');
+            const Quotes = ['Hello', 'Hi I cannot answer every question', 'I do not know', '🤷']
+            Copilot.textContent = Quotes[Math.floor(Math.random() * Quotes.length)]
+        }
+         let screen = document.getElementById("screen");
+        function press(value) { 
+            screen.textContent = screen.textContent === "0" ? value : screen.textContent + value; 
+        }
+        function calculate() { 
+            screen.textContent = eval(screen.textContent); 
+        }
+        function squareRoot() { 
+            screen.textContent = Math.sqrt(screen.textContent)
+        }
+        function clearScreen() { 
+            screen.textContent = "0"; 
+        }
+        function Install(Appname) {
+            document.getElementById(`${Appname}`).style.display = "block";
+             alert(`✅ ${Appname} installed!`);
+             localStorage.setItem(`Bought${Appname}`, "true")
+        }
+        function openBattery() {
+    const batteryDiv = document.getElementById('battery');
+    if (batteryDiv.style.display === 'block') {
+        batteryDiv.style.display = 'none';
+    } else {
+        batteryDiv.style.display = 'block';
+    }
+}
+
+navigator.getBattery().then(function(battery) {
+    const BatteryImg = document.getElementById('BatteryImg');
+  const batteryDiv = document.getElementById('battery');
+  const batteryPercentage = document.getElementById('battery-percentage');
+    function ChangeBatteryIcon() {
+        if(battery.charging) {
+            BatteryImg.src = 'Misc/Charging.svg';
+        } else {
+            BatteryImg.src = 'Misc/Battery.png';
+        }
+    }
+    ChangeBatteryIcon();
+    battery.addEventListener('chargingchange', ChangeBatteryIcon);
+  function updateBattery() {
+    const percentage = Math.round(battery.level * 100);
+    batteryPercentage.textContent = `${percentage}%`;
+  }
+  updateBattery();
+  battery.addEventListener('levelchange', updateBattery);
+});
+function updateNetworkStatus() {
+  const status = navigator.onLine ? '🟢 Online' : '🔴 Offline';
+  document.getElementById('network-status').textContent = status;
+}
+updateNetworkStatus();
+window.addEventListener('online', updateNetworkStatus);
+window.addEventListener('offline', updateNetworkStatus);
+function saveNote() {
+            const noteContent = document.getElementById('notepad').value;
+            localStorage.setItem('savedNote', noteContent);
+            alert('Note saved!');
+        }
+
+        function loadNote() {
+            const savedNote = localStorage.getItem('savedNote');
+            if (savedNote !== null) {
+                document.getElementById('notepad').value = savedNote;
+            } else {
+                alert('No saved note found.');
+            }
+        }
+
+        function clearNote() {
+            if (confirm('Are you sure you want to clear the notepad?')) {
+                document.getElementById('notepad').value = '';
+            }
+        }  
+        function UploadAudio() {
+            const audioInput = document.getElementById('AudioInput');
+            audioInput.type = 'file';
+            audioInput.accept = 'audio/*,video/*';
+            audioInput.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const audioPlayer = document.getElementById('Audio');
+                    audioPlayer.src = URL.createObjectURL(file);
+                    audioPlayer.load();
+                    audioPlayer.play();
+                    TimeTell()
+                }
+            };
+        }
+        function Back10seconds() {
+            const video = document.querySelector('.popup#MediaPlayerPopup video');
+            if (video) {
+                video.currentTime = Math.max(0, video.currentTime - 10);
+            }
+        }
+        function Forward10seconds() {
+            const video = document.querySelector('.popup#MediaPlayerPopup video');
+            if (video) {
+                video.currentTime = Math.min(video.duration, video.currentTime + 10);
+            }
+        }
+function TimeTell() {
+    const video = document.querySelector('.popup#MediaPlayerPopup video');
+    const TimeDictator = document.getElementById('TimeTeller');
+    if (!video) return;
+    let TimeStamp = Math.floor(video.currentTime);
+    let Minute = Math.floor(TimeStamp / 60);
+    let Second = TimeStamp % 60;
+    let formattedTime = `${Minute}:${Second.toString().padStart(2, '0')}`;
+    TimeDictator.textContent = formattedTime;
+}
+
+setInterval(TimeTell, 1000);
+
+
+function Pause() {
+    const video = document.querySelector('.popup#MediaPlayerPopup video');
+    const button = document.getElementById('PlayButton');
+    if (video && button) {
+        if (video.paused) {
+            video.play()
+                .then(() => {
+                    button.style.backgroundImage = "url('Apps/MediaPlayer.png')";
+                })
+                .catch(err => {
+                    console.warn("Playback failed:", err);
+                });
+        } else {
+            video.pause();
+            button.style.backgroundImage = "url('Misc/Pause.png')";
+        }
+    }
+}
+function Fullscreen(element) {
+    const WebsiteView = document.getElementById(`${element}`)
+    WebsiteView.style.position = 'fixed'
+    if(WebsiteView.requestFullscreen) {
+        WebsiteView.requestFullscreen();
+    } if(WebsiteView.msRequestFullscreen) {
+        WebsiteView.msRequestFullscreen();
+    }
+}
+function ExitFullscreen() {
+    if(document.fullscreenElement) {
+        document.exitFullscreen();
+    } if(document.msFullscreenElement) {
+        document.msExitFullscreen();
+    }
+}
+    </script>
+</body>
+</html>
