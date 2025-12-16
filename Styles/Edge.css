@@ -1,0 +1,98 @@
+.iframe {
+ width: 100%;
+ height: 300px;
+ border: 1px solid #ccc;
+display: none;
+        }
+        
+  iframe.active {
+            display: block;
+        }
+
+        .browser .close-button {
+    background: #ffffff;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    margin-left: auto;
+    transition: all 0.5s;
+}
+
+.browser .close-button:hover {
+    background: #ff0400;
+    color: white;
+}
+
+.browser-buttons {
+    width: 35px; 
+    height: auto;
+    background: #f7f7f7;
+}
+.browser-buttons:hover {
+    width: 35px; 
+    height: auto;
+    background: #b3b3b3;
+}
+
+      .browser {
+    position: absolute;
+    top: 100px;
+    left: 50px;
+    width: 80%;
+    height: 80%;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: none;
+    cursor: move;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 6px;
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.browser header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: #f7f7f7;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: move;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+        .browser iframe {
+            width: 100%;
+            height: calc(100% - 40px);
+            border: none;
+        }
+.browser header input {
+    flex: 1;
+    margin: 0 10px;
+    padding: 5px;
+    border: block;
+    border-radius: 3px;
+}
+.browser .other {
+    background: #ffffff;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.browser .other:hover {
+    background: #ff0400;
+    color: white;
+}
